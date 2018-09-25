@@ -25,32 +25,24 @@ router.post('/api/burgers', function(req, res) {
 });
 
 router.put('/api/burgers/:id', function(req, res) {
-  var condition = 'id = ' + req.params.id;
-
-  burger.update({ devoured: true }, condition, function(result) {
-    if (result.changedRows === 0) {
-      // no rows changed, ID does not exist
-      return res.status(404).end();
-    } else {
-      // res.status(200).end();
-      res.redirect('/');
-    }
-  });
+  db.burgers
+    .update(
+      { devoured: true },
+      {
+        where: {
+          id: req.params.id
+        }
+      }
+    )
+    .then(function(result) {
+      if (result.changedRows === 0) {
+        // no rows changed, ID does not exist
+        return res.status(404).end();
+      } else {
+        res.redirect('/');
+      }
+    });
 });
-
-// router.delete('/api/burgers/:id', function(req, res) {
-//   var condition = 'id = ' + req.params.id;
-
-//   burger.delete(condition, function(result) {
-//     if (result.affectedRows === 0) {
-//       // no rows changed, ID does not exist
-//       return res.status(404).end();
-//     } else {
-//       // res.status(200).end();
-//       res.redirect('/');
-//     }
-//   });
-// });
 
 // export routes for server.js
 module.exports = router;
